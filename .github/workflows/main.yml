@@ -18,6 +18,8 @@ jobs:
     - uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
+        cache: true
+        cache-key: flutter-${{ runner.os }}-v0
     - run: flutter doctor -v
     - run: flutter pub get
     - run: flutter build web --web-renderer html --release
@@ -29,7 +31,6 @@ jobs:
           
   create-build:
     name: Create ${{ matrix.target }} build
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         target: [macOS, Windows, Linux, Android]
@@ -56,12 +57,15 @@ jobs:
             asset_extension: .apk
       # Disable fail-fast as we want results from all even if one fails.
       fail-fast: false
+    runs-on: ${{ matrix.os }}
     steps:
       # Set up Flutter.
       - name: Clone Flutter repository with stable channel
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          cache: true
+          cache-key: flutter-${{ matrix.os }}-v0
       - name: Install Linux dependencies
         if: matrix.target == 'Linux'
         run: |
@@ -127,7 +131,10 @@ jobs:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
         with:
-          path: build
+          path: download
+      - run: |
+        mkdir build
+        find download -type f -print0 | xargs -0 mv -vt build
       - run: ls -lR build
       - name: Draft Release
         id: create_release
