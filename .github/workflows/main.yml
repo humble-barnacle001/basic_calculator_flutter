@@ -136,6 +136,6 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
           files: build/*
-          automatic_release_tag: ${{ github.sha }}
+          automatic_release_tag: latest
             
   
