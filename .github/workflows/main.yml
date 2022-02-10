@@ -133,8 +133,8 @@ jobs:
         with:
           path: download
       - run: |
-        mkdir build
-        find download -type f -print0 | xargs -0 mv -vt build
+          mkdir build
+          find download -type f -print0 | xargs -0 mv -vt build
       - run: ls -lR build
       - name: Draft Release
         id: create_release
